@@ -52,7 +52,7 @@ bool InstallBootSector(char* lpszVolumeType)
 		{
 			return false;
 		}
-    }
+    	}
 
 	else if (strcasecmp(lpszVolumeType, "fat") == 0)
 	{

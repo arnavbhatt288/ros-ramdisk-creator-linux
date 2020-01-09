@@ -17,7 +17,7 @@ bool CreateINI(char *pacPath, char *pacTopic, char *pacItem, char *pacValue)
     int                 iFoundTopic;
     int                 iFoundItem;
     int                 iError;
-	int                 iItemLength;
+    int                 iItemLength;
     int                 iValueLength;
     long                lTopicFilePos;
     char                acTopicHeading[80];
