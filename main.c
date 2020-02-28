@@ -182,6 +182,16 @@ int main(int argc, char *argv[])
 				processFlag = CreateINI(inisource, "LiveCD", "BootType", "Windows2003");
 				processFlag = CreateINI(inisource, "LiveCD", "SystemPath", "ramdisk(0)\\reactos");
 				processFlag = CreateINI(inisource, "LiveCD", "Options", "/MININT /RDPATH=livecd.iso /RDEXPORTASCD");
+				// BootCD already has debug by default, therefore end-user will also have option to turn it on for LiveCD.
+				processFlag = CreateINI(inisource, "Operating Systems", "LiveCD_Debug", "\"LiveCD (Debug)\"");
+				processFlag = CreateINI(inisource, "LiveCD_Debug", "BootType", "Windows2003");
+				processFlag = CreateINI(inisource, "LiveCD_Debug", "SystemPath", "ramdisk(0)\\reactos");
+				processFlag = CreateINI(inisource, "LiveCD_Debug", "Options", "/MININT /RDPATH=livecd.iso /RDEXPORTASCD /DEBUG /DEBUGPORT=COM1 /BAUDRATE=115200 /SOS");
+				// ...and screen for those unfortunate without a Serial connector or cable.
+				processFlag = CreateINI(inisource, "Operating Systems", "LiveCD_Screen", "\"LiveCD (Screen)\"");
+				processFlag = CreateINI(inisource, "LiveCD_Screen", "BootType", "Windows2003");
+				processFlag = CreateINI(inisource, "LiveCD_Screen", "SystemPath", "ramdisk(0)\\reactos");
+				processFlag = CreateINI(inisource, "LiveCD_Screen", "Options", "/MININT /RDPATH=livecd.iso /RDEXPORTASCD /DEBUG /DEBUGPORT=SCREEN /SOS");
 			}
 
 			if (processFlag == false)
