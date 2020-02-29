@@ -8,7 +8,7 @@
 #include "install.h"
 #include "volume.h"
 
-#include <stdbool.h> 
+#include <stdbool.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>

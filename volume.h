@@ -5,7 +5,7 @@
  * COPYRIGHT:   Copyright 2019 Arnav Bhatt (arnavbhatt2004@gmail.com)
  */
 
-#include <stdbool.h> 
+#include <stdbool.h>
 
 bool    OpenVolume(char* lpszVolumeName);
 void    CloseVolume(void);

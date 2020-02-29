@@ -13,12 +13,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
-#include <stdbool.h> 
-#include <unistd.h> 
+#include <stdbool.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include <fcntl.h> 
+#include <fcntl.h>
 
 int main(int argc, char *argv[])
 {
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	bool sFlag = false;
 	bool iFlag = false;
 	bool processFlag = false;
-	
+
 	char* drive;
 	char* fstype;
 	char* dir;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	char ldest[512];
 	char sdest[512];
 	char inisource[512];
-	
+
 	while((opt = getopt(argc, argv, "d:u:b:l:s:f:i::")) != -1)
 	{
 		switch(opt)
@@ -81,15 +81,14 @@ int main(int argc, char *argv[])
 				iFlag = true;
 				break;
 		}
-	
 	}
-	
+
 	if(dFlag == true)
 	{
 		if(fsFlag == false)
 		{
 			printf("Missing argument: '-f'\n");
-			return 0;	
+			return 0;
 		}
 		if (!OpenVolume(drive))
 		{
@@ -102,11 +101,10 @@ int main(int argc, char *argv[])
 			printf("Exiting program...\n");
 			return -1;
 		}
-			
+
 		return 0;
 
 	}
-	
 	else if(uFlag == true)
 	{
 		if(bFlag == true)
@@ -118,7 +116,7 @@ int main(int argc, char *argv[])
 				return -1;
 			}
 		}
-		
+
 		else if(lFlag == true)
 		{
 			sprintf(ldest, "%s/livecd.iso", dir);
@@ -128,7 +126,7 @@ int main(int argc, char *argv[])
 				return -1;
 			}
 		}
-		
+
 		else if(sFlag == true)
 		{
 			sprintf(sdest, "%s/freeldr.sys", dir);
@@ -138,19 +136,18 @@ int main(int argc, char *argv[])
 				return -1;
 			}
 		}
-		
 		else
 		{
 			printf("Missing argument: either '-b', '-l' or '-s'\n");
-			return 0;	
+			return 0;
 		}
-		
-		if(iFlag == true)
+
+		if (iFlag == true)
 		{
 			sprintf(inisource, "%s/freeldr.ini", dir);
 			processFlag = CreateINI(inisource, "FREELOADER", "DefaultOS", "Setup");
 			processFlag = CreateINI(inisource, "FREELOADER", "TimeOut", "5");
-			processFlag = CreateINI(inisource, "Display", "TitleText", "ReactOS Setup");
+			processFlag = CreateINI(inisource, "Display", "TitleText", "ReactOS Setup (RAM Disk)");
 			processFlag = CreateINI(inisource, "Display", "StatusBarColor", "Cyan");
 			processFlag = CreateINI(inisource, "Display", "StatusBarTextColor", "Black");
 			processFlag = CreateINI(inisource, "Display", "BackdropTextColor", "White");
@@ -170,24 +167,34 @@ int main(int argc, char *argv[])
 			processFlag = CreateINI(inisource, "Display", "CenterMenu", "No");
 			processFlag = CreateINI(inisource, "Display", "MinimalUI", "Yes");
 			processFlag = CreateINI(inisource, "Display", "TimeText", "Seconds until highlighted choice will be started automatically:");
-			
-			if(bFlag == true)
+
+			if (bFlag == true)
 			{
 				processFlag = CreateINI(inisource, "Operating Systems", "Setup", "\"Setup\"");
 				processFlag = CreateINI(inisource, "Setup", "BootType", "ReactOSSetup");
 				processFlag = CreateINI(inisource, "Setup", "SystemPath", "ramdisk(0)");
 				processFlag = CreateINI(inisource, "Setup", "Options", "/RDPATH=bootcd.iso");
 			}
-			
-			if(lFlag == true)
+
+			if (lFlag == true)
 			{
 				processFlag = CreateINI(inisource, "Operating Systems", "LiveCD", "\"LiveCD\"");
 				processFlag = CreateINI(inisource, "LiveCD", "BootType", "Windows2003");
-				processFlag = CreateINI(inisource, "LiveCD", "SystemPath", "rramdisk(0)\\reactos");
+				processFlag = CreateINI(inisource, "LiveCD", "SystemPath", "ramdisk(0)\\reactos");
 				processFlag = CreateINI(inisource, "LiveCD", "Options", "/MININT /RDPATH=livecd.iso /RDEXPORTASCD");
+				// BootCD already has debug by default, therefore end-user will also have option to turn it on for LiveCD.
+				processFlag = CreateINI(inisource, "Operating Systems", "LiveCD_Debug", "\"LiveCD (Debug)\"");
+				processFlag = CreateINI(inisource, "LiveCD_Debug", "BootType", "Windows2003");
+				processFlag = CreateINI(inisource, "LiveCD_Debug", "SystemPath", "ramdisk(0)\\reactos");
+				processFlag = CreateINI(inisource, "LiveCD_Debug", "Options", "/MININT /RDPATH=livecd.iso /RDEXPORTASCD /DEBUG /DEBUGPORT=COM1 /BAUDRATE=115200 /SOS");
+				// ...and screen for those unfortunate without a Serial connector or cable.
+				processFlag = CreateINI(inisource, "Operating Systems", "LiveCD_Screen", "\"LiveCD (Screen)\"");
+				processFlag = CreateINI(inisource, "LiveCD_Screen", "BootType", "Windows2003");
+				processFlag = CreateINI(inisource, "LiveCD_Screen", "SystemPath", "ramdisk(0)\\reactos");
+				processFlag = CreateINI(inisource, "LiveCD_Screen", "Options", "/MININT /RDPATH=livecd.iso /RDEXPORTASCD /DEBUG /DEBUGPORT=SCREEN /SOS");
 			}
-			
-			if(processFlag == false)
+
+			if (processFlag == false)
 			{
 				printf("Exiting program...\n");
 				return -1;
@@ -196,10 +203,10 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 	}
-	
+
 	else
 	{
-		printf("\nReactOS Ramdisk Creator V1.0\nCopyright 2019 Arnav Bhatt\n\n");
+		printf("\nReactOS Ramdisk Creator V1.0\nCopyright 2019-2020 Arnav Bhatt\n\n");
 		printf("Usage:\n./name-of-program (provide necessary args)\n\n");
 		printf("Arguments for freeldr boot code installation:\n");
 		printf("-d - Provide partition of your drive\n");
@@ -208,7 +215,7 @@ int main(int argc, char *argv[])
 		printf("-u - Provide your drive's directory\n");
 		printf("-b - Provide your bootcd's directory\n");
 		printf("-l - Provide your livecd's directory\n");
-		printf("-s - Provide your freeldr.sys' directory\n\n");
+		printf("-s - Provide your freeldr.sys directory\n\n");
 		printf("Optional arguments:\n");
 		printf("-i - Generates freeldr.ini (use it with either -b or -l)\n");
 		return 0;
